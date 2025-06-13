@@ -1,0 +1,31 @@
+#include <QApplication>
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QTextStream>
+#include <QFile>
+#include <QStringList>
+#include <vector>
+
+struct Produk {
+    QString nama;
+    double harga;
+};
+
+std::vector<Produk> daftarProduk;
+
+void tambahProduk(QWidget* parent) {
+    bool ok;
+    QString nama = QInputDialog::getText(parent, "Tambah Produk", "Nama produk:", QLineEdit::Normal, "", &ok);
+    if (!ok || nama.trimmed().isEmpty()) return;
+
+    double harga = QInputDialog::getDouble(parent, "Tambah Produk", "Harga (Rp):", 0, 0, 1e6, 2, &ok);
+    if (!ok) return;
+
+    daftarProduk.push_back({nama.trimmed(), harga});
+    QMessageBox::information(parent, "Sukses", "Produk berhasil ditambahkan.");
+}
+
+void tampilkanProduk(QWidget* parent)*
