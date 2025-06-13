@@ -1,51 +1,141 @@
 #include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
 #include <iomanip>
+
 using namespace std;
 
-struct Barang {
+// Struktur Produk
+struct Produk {
     string nama;
-    int jumlah;
-    float harga;
+    double harga;
 };
 
+// Global daftar produk
+vector<Produk> daftarProduk;
+
+// Fungsi Tambah Produk
+void tambahProduk() {
+    Produk p;
+    cout << "Nama produk: ";
+    cin >> ws; // membersihkan buffer
+    getline(cin, p.nama);
+    cout << "Harga: ";
+    cin >> p.harga;
+    daftarProduk.push_back(p);
+    cout << "Produk ditambahkan!\n";
+}
+
+// Fungsi Lihat Produk
+void tampilkanProduk() {
+    cout << "\nDaftar Produk:\n";
+    for (int i = 0; i < daftarProduk.size(); i++) {
+        cout << i + 1 << ". " << daftarProduk[i].nama << " - Rp" << fixed << setprecision(2) << daftarProduk[i].harga << endl;
+    }
+}
+
+// Fungsi Hapus Produk
+void hapusProduk() {
+    tampilkanProduk();
+    int index;
+    cout << "Pilih nomor produk yang ingin dihapus: ";
+    cin >> index;
+    if (index > 0 && index <= daftarProduk.size()) {
+        daftarProduk.erase(daftarProduk.begin() + index - 1);
+        cout << "Produk dihapus.\n";
+    } else {
+        cout << "Nomor tidak valid.\n";
+    }
+}
+
+// Fungsi Transaksi dan Pembayaran
+void transaksi() {
+    vector<Produk> keranjang;
+    char lanjut;
+    int pilih;
+    double total = 0.0;
+
+    do {
+        tampilkanProduk();
+        cout << "Pilih produk (nomor): ";
+        cin >> pilih;
+
+        if (pilih > 0 && pilih <= daftarProduk.size()) {
+            keranjang.push_back(daftarProduk[pilih - 1]);
+            total += daftarProduk[pilih - 1].harga;
+            cout << "Produk ditambahkan ke keranjang.\n";
+        } else {
+            cout << "Pilihan tidak valid.\n";
+        }
+
+        cout << "Tambah produk lagi? (y/n): ";
+        cin >> lanjut;
+    } while (lanjut == 'y' || lanjut == 'Y');
+
+    cout << "\nTotal Belanja: Rp" << fixed << setprecision(2) << total << endl;
+
+    double uangBayar;
+    cout << "Masukkan jumlah uang: Rp";
+    cin >> uangBayar;
+
+    if (uangBayar >= total) {
+        double kembalian = uangBayar - total;
+        cout << "Kembalian: Rp" << fixed << setprecision(2) << kembalian << endl;
+
+        // Simpan ke file riwayat
+        ofstream file("riwayat_transaksi.txt", ios::app);
+        file << "Transaksi Baru:\n";
+        for (auto& item : keranjang) {
+            file << "- " << item.nama << " - Rp" << item.harga << "\n";
+        }
+        file << "Total: Rp" << total << "\n";
+        file << "Bayar: Rp" << uangBayar << "\n";
+        file << "Kembalian: Rp" << kembalian << "\n";
+        file << "------------------------\n";
+        file.close();
+        cout << "Transaksi disimpan.\n";
+    } else {
+        cout << "Uang tidak cukup untuk membayar.\n";
+    }
+}
+
+// Menu Utama
+void menu() {
+    int pilih;
+    do {
+        cout << "\n=== APLIKASI KASIR SEDERHANA ===\n";
+        cout << "1. Tambah Produk\n";
+        cout << "2. Lihat Produk\n";
+        cout << "3. Hapus Produk\n";
+        cout << "4. Transaksi\n";
+        cout << "5. Keluar\n";
+        cout << "Pilih menu: ";
+        cin >> pilih;
+
+        switch (pilih) {
+            case 1:
+                tambahProduk();
+                break;
+            case 2:
+                tampilkanProduk();
+                break;
+            case 3:
+                hapusProduk();
+                break;
+            case 4:
+                transaksi();
+                break;
+            case 5:
+                cout << "Terima kasih!\n";
+                break;
+            default:
+                cout << "Pilihan tidak valid!\n";
+        }
+    } while (pilih != 5);
+}
+
 int main() {
-    int jumlahBarang;
-    float total = 0;
-
-    cout << "=== Selamat Datang di Toko Kami ===" << endl;
-    cout << "Masukkan jumlah barang yang dibeli: ";
-    cin >> jumlahBarang;
-
-    Barang daftarBarang[jumlahBarang];
-
-    for (int i = 0; i < jumlahBarang; i++) {
-        cout << "\nBarang ke-" << i + 1 << endl;
-        cout << "Nama Barang: ";
-        cin.ignore(); 
-        getline(cin, daftarBarang[i].nama);
-        cout << "Jumlah: ";
-        cin >> daftarBarang[i].jumlah;
-        cout << "Harga satuan: ";
-        cin >> daftarBarang[i].harga;
-
-        total += daftarBarang[i].jumlah * daftarBarang[i].harga;
-    }
-
-    cout << "\n=== Struk Pembelian ===" << endl;
-    cout << left << setw(20) << "Nama Barang"
-         << setw(10) << "Jumlah"
-         << setw(15) << "Harga"
-         << setw(15) << "Total" << endl;
-
-    for (int i = 0; i < jumlahBarang; i++) {
-        float subtotal = daftarBarang[i].jumlah * daftarBarang[i].harga;
-        cout << left << setw(20) << daftarBarang[i].nama
-             << setw(10) << daftarBarang[i].jumlah
-             << setw(15) << daftarBarang[i].harga
-             << setw(15) << subtotal << endl;
-    }
-
-    cout << "\nTotal Bayar: Rp " << fixed << setprecision(2) << total << endl;
-
+    menu();
     return 0;
 }
