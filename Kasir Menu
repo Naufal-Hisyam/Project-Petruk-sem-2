@@ -1,23 +1,11 @@
 #include <iostream>
-#include <string>
 #include <windows.h>
 #include <conio.h>
-#include <ctime>
+#include "produk.h"
 
 using namespace std;
 
-void color(int color) {
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-}
-
-void gotoxy(int x, int y) {
-    COORD c;
-    c.X = x;
-    c.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
-}
-
-void disableResize() {
+void disableResize(){
     HWND console = GetConsoleWindow();
     LONG style = GetWindowLong(console, GWL_STYLE);
     style &= ~WS_SIZEBOX;
@@ -25,59 +13,107 @@ void disableResize() {
     SetWindowLong(console, GWL_STYLE, style);
 }
 
-void drawMenuFrame() {
+void drawMenuFrame(){
+	system("cls");
     color(14);
-    gotoxy(23, 16); cout << " __| |____________________________________________| |__";
-    gotoxy(23, 17); cout << "(__   ____________________________________________   __)";
-    gotoxy(23, 18); cout << "   | |                                            | |";
-    gotoxy(23, 19); cout << "   | |          # APLIKASI MESIN KASIR #          | |";
-    gotoxy(23, 20); cout << " __| |____________________________________________| |__";
-    gotoxy(23, 21); cout << "(__   ____________________________________________   __)";
-    gotoxy(23, 22); cout << "   | |                                            | |";
-    gotoxy(23, 23); cout << "   | |                                            | |";
-    gotoxy(23, 24); cout << "   | |                                            | |";
-    gotoxy(23, 25); cout << "   | |                                            | |";
-    gotoxy(23, 26); cout << "   | |                                            | |";
-    gotoxy(23, 27); cout << " __| |____________________________________________| |__";
-    gotoxy(23, 28); cout << "(__   ____________________________________________   __)";
-    gotoxy(23, 29); cout << "   | |                                            | |";
+    gotoxy(23, 16);
+    cout << " __| |____________________________________________| |__";
+    gotoxy(23, 17);
+    cout << "(__   ____________________________________________   __)";
+    gotoxy(23, 18);
+    cout << "   | |                                            | |";
+    gotoxy(23, 19);
+    cout << "   | |          # APLIKASI MESIN KASIR #          | |";
+    gotoxy(23, 20);
+    cout << " __| |____________________________________________| |__";
+    gotoxy(23, 21);
+    cout << "(__   ____________________________________________   __)";
+    gotoxy(23, 22);
+    cout << "   | |                                            | |";
+    gotoxy(23, 23);
+    cout << "   | |                                            | |";
+    gotoxy(23, 24);
+    cout << "   | |                                            | |";
+    gotoxy(23, 25);
+    cout << "   | |                                            | |";
+    gotoxy(23, 26);
+    cout << "   | |                                            | |";
+    gotoxy(23, 27);
+    cout << "   | |                                            | |";
+    gotoxy(23, 28);
+    cout << " __| |____________________________________________| |__";
+    gotoxy(23, 29);
+    cout << "(__   ____________________________________________   __)";
+    gotoxy(23, 30);
+    cout << "   | |                                            | |";
+
 }
 
-int main() {
+int main(){
     disableResize();
     system("mode con cols=100 lines=50");
 
-    int set[4] = {7, 7, 7, 7};
+    int set[5] = {7, 7, 7, 7, 7};
     int counter = 1;
     char key;
 
     while (true) {
         drawMenuFrame();
 
-        set[0] = set[1] = set[2] = set[3] = 7;
+        set[0] = set[1] = set[2] = set[3] = set[4] = 7;
         set[counter - 1] = 12;
 
-        gotoxy(42, 23); color(set[0]); cout << "Lihat Daftar Harga";
-        gotoxy(39, 24); color(set[1]); cout << "Masukkan Barang dan Harga";
-        gotoxy(43, 25); color(set[2]); cout << "Laporan Keuangan";
-        gotoxy(49, 26); color(set[3]); cout << "Exit";
+        gotoxy(42, 23);
+        color(set[0]);
+        cout << "Lihat Daftar Produk";
+
+        gotoxy(39, 24);
+        color(set[1]);
+        cout << "Masukkan Barang dan Harga";
+
+        gotoxy(43, 25);
+        color(set[2]);
+        cout << "Laporan Keuangan";
+        
+        gotoxy(47, 26);
+        color(set[3]);
+        cout << "Transaksi";
+
+        gotoxy(49, 27);
+        color(set[4]);
+        cout << "Exit";
 
         key = _getch();
+
         if (key == 72 && counter > 1) counter--;
         if (key == 80 && counter < 4) counter++;
         if (key == '\r') {
             gotoxy(43, 29);
             color(10);
-            if (counter == 1) cout << "Melihat Daftar Harga";
-            else if (counter == 2) cout << "Masukkan Barang dan Harga";
-            else if (counter == 3) cout << "Laporan Keuangan";
-            else if (counter == 4) cout << "     Exit";
-            Sleep(1000);
-            gotoxy(43, 29); cout << "                    ";
-            if (counter == 4) break;
+            if (counter == 1) {
+                cout << "Melihat Daftar Produk" << endl;
+                tampilkanProduk();
+                _getch();
+            }
+            else if (counter == 2) {
+                cout << "Masukkan Barang dan Harga" << endl;
+                tambahProduk();
+                _getch();
+            }
+            else if (counter == 3) {
+                cout << "Laporan Keuangan (di sini)" << endl;
+                _getch();
+            }
+            else if (counter == 4) {
+                cout << "     Exit" << endl;
+                break;
+            }
+            gotoxy(43, 29);
+            cout << "                    ";
         }
         Sleep(100);
     }
 
     return 0;
 }
+
