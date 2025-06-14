@@ -4,7 +4,6 @@
 #include <vector>
 using namespace std;
 
-// Struct untuk menyimpan produk
 struct Produk {
     string nama;
     int harga;
@@ -12,7 +11,6 @@ struct Produk {
 
 extern vector<Produk> daftarProduk;
 
-// Declare functions
 void color(int color);
 void gotoxy(int x, int y);
 void tampilAsciiProduk();
